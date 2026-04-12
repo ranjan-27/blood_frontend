@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Donor Dashboard | LifeStream</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <nav>
+        <a href="../index.html" class="logo"><i class="fas fa-heartbeat"></i> LifeStream</a>
+        <div>
+            <span id="user-name" style="margin-right: 1rem; font-weight: 600;"></span>
+            <button onclick="logout()" class="btn btn-outline" style="padding: 0.4rem 1rem;">Logout</button>
+        </div>
+    </nav>
+
+    <div class="dashboard">
+        <aside class="sidebar">
+            <ul>
+                <li class="active" onclick="showTab('camps-tab', this)"><i class="fas fa-calendar-check"></i> Available Camps</li>
+                <li onclick="showTab('bookings-tab', this)"><i class="fas fa-history"></i> My Donations</li>
+                <li onclick="showTab('profile-tab', this)"><i class="fas fa-user"></i> Profile</li>
+            </ul>
+        </aside>
+
+        <main class="content">
+            <!-- Available Camps Tab -->
+            <section id="camps-tab" class="tab-content">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                    <h2>Find Donation Camps</h2>
+                    <div style="display: flex; gap: 1rem;">
+                        <input type="text" id="search-location" placeholder="Filter by Location" style="padding: 0.6rem; border-radius: 6px; border: 1px solid #ddd;">
+                        <button onclick="loadCamps()" class="btn btn-primary">Search</button>
+                    </div>
+                </div>
+                <div id="camps-list" class="card-grid">
+                    <!-- Camps will be loaded here -->
+                </div>
+            </section>
+
+            <!-- My Bookings Tab -->
+            <section id="bookings-tab" class="tab-content" style="display: none;">
+                <h2 style="margin-bottom: 2rem;">My Donation History</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Camp</th>
+                            <th>Date</th>
+                            <th>Location</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="bookings-list">
+                        <!-- Bookings will be loaded here -->
+                    </tbody>
+                </table>
+            </section>
+
+            <!-- Profile Tab -->
+            <section id="profile-tab" class="tab-content" style="display: none;">
+                <h2 style="margin-bottom: 2rem;">My Profile</h2>
+                <div class="card" style="max-width: 500px;">
+                    <div id="profile-info">
+                        <!-- Profile info will be loaded here -->
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="../js/auth.js"></script>
+    <script src="../js/donor.js"></script>
+    <script>
+        const user = checkAuth('donor');
+        if (user) {
+            document.getElementById('user-name').textContent = `Hello, ${user.name}`;
+            loadCamps();
+            loadProfile();
+        }
+
+        function showTab(tabId, el) {
+            document.querySelectorAll('.tab-content').forEach(tab => tab.style.display = 'none');
+            document.getElementById(tabId).style.display = 'block';
+            document.querySelectorAll('.sidebar li').forEach(li => li.classList.remove('active'));
+            el.classList.add('active');
+            
+            if (tabId === 'bookings-tab') loadBookings();
+        }
+    </script>
+</body>
+</html>

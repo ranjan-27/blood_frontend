@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hospital Dashboard | LifeStream</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <nav>
+        <a href="../index.html" class="logo"><i class="fas fa-heartbeat"></i> LifeStream</a>
+        <div>
+            <span id="user-name" style="margin-right: 1rem; font-weight: 600;"></span>
+            <button onclick="logout()" class="btn btn-outline" style="padding: 0.4rem 1rem;">Logout</button>
+        </div>
+    </nav>
+
+    <div class="dashboard">
+        <aside class="sidebar">
+            <ul>
+                <li class="active" onclick="showTab('manage-camps-tab', this)"><i class="fas fa-tasks"></i> Manage Camps</li>
+                <li onclick="showTab('create-camp-tab', this)"><i class="fas fa-plus-circle"></i> Create Camp</li>
+                <li onclick="showTab('requests-tab', this)"><i class="fas fa-ambulance"></i> Blood Requests</li>
+            </ul>
+        </aside>
+
+        <main class="content">
+            <!-- Manage Camps Tab -->
+            <section id="manage-camps-tab" class="tab-content">
+                <h2 style="margin-bottom: 2rem;">My Camps</h2>
+                <div id="hospital-camps-list" class="card-grid">
+                    <!-- Camps will be loaded here -->
+                </div>
+
+                <!-- Donors Modal/Section (Hidden initially) -->
+                <div id="donors-section" style="display: none; margin-top: 3rem;">
+                    <h3 id="donors-title">Donors for Camp</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Blood Group</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="camp-donors-list">
+                            <!-- Donors will be loaded here -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Create Camp Tab -->
+            <section id="create-camp-tab" class="tab-content" style="display: none;">
+                <h2 style="margin-bottom: 2rem;">Organize a New Camp</h2>
+                <div class="card" style="max-width: 600px;">
+                    <form id="create-camp-form">
+                        <div class="form-group">
+                            <label>Camp Title</label>
+                            <input type="text" id="camp-title" required placeholder="e.g. Annual Blood Drive">
+                        </div>
+                        <div class="form-group">
+                            <label>Location</label>
+                            <input type="text" id="camp-location" required placeholder="Full Address">
+                        </div>
+                        <div class="form-group">
+                            <label>Date</label>
+                            <input type="date" id="camp-date" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Max Donors</label>
+                            <input type="number" id="camp-max" required value="50">
+                        </div>
+                        <div class="form-group">
+                            <label>Required Blood Groups (comma separated)</label>
+                            <input type="text" id="camp-groups" value="A+, A-, B+, B-, O+, O-, AB+, AB-">
+                        </div>
+                        <button type="submit" class="btn btn-primary" style="width: 100%;">Create Camp</button>
+                    </form>
+                </div>
+            </section>
+
+            <!-- Requests Tab -->
+            <section id="requests-tab" class="tab-content" style="display: none;">
+                <h2 style="margin-bottom: 2rem;">Raise Blood Request</h2>
+                <div class="card" style="max-width: 500px; margin-bottom: 2rem;">
+                    <form id="raise-request-form">
+                        <div class="form-group">
+                            <label>Blood Group</label>
+                            <select id="req-group">
+                                <option value="A+">A+</option>
+                                <option value="A-">A-</option>
+                                <option value="B+">B+</option>
+                                <option value="B-">B-</option>
+                                <option value="O+">O+</option>
+                                <option value="O-">O-</option>
+                                <option value="AB+">AB+</option>
+                                <option value="AB-">AB-</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Quantity (Units)</label>
+                            <input type="number" id="req-qty" required value="1">
+                        </div>
+                        <button type="submit" class="btn btn-primary" style="width: 100%;">Post Request</button>
+                    </form>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="../js/auth.js"></script>
+    <script src="../js/hospital.js"></script>
+    <script>
+        const user = checkAuth('hospital');
+        if (user) {
+            document.getElementById('user-name').textContent = user.name;
+            loadHospitalCamps();
+        }
+
+        function showTab(tabId, el) {
+            document.querySelectorAll('.tab-content').forEach(tab => tab.style.display = 'none');
+            document.getElementById(tabId).style.display = 'block';
+            document.querySelectorAll('.sidebar li').forEach(li => li.classList.remove('active'));
+            el.classList.add('active');
+            
+            if (tabId === 'manage-camps-tab') {
+                loadHospitalCamps();
+                document.getElementById('donors-section').style.display = 'none';
+            }
+        }
+    </script>
+</body>
+</html>
